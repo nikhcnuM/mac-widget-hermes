@@ -112,6 +112,28 @@ Run local verification on a Mac with full Xcode installed.
 - This is still first-pass companion code; expect Swift compile fixes once
   XcodeGen/Xcode are available.
 
+## Redelivery and Idempotency (Sprint 3 risk — NOT yet implemented)
+
+`agent-bus` now performs automatic pending-message recovery (`XPENDING` / `XCLAIM`).
+If the companion app loses its WebSocket connection while a transcription event was
+in flight, the event may be redelivered once the consumer reconnects and the bus
+runs recovery.
+
+**Known risk**: the current companion code (`AgentBusClient.swift`) does not deduplicate
+events. A redelivered `voice.transcription.completed` with the same `id` or
+`correlation_id` will trigger a second Hermes call and a second `agent.session.updated`.
+
+**Mitigation to implement in Sprint 4**:
+- Track the last `N` processed `id` values in memory (or in App Group storage).
+- Before calling Hermes, check if `envelope.id` or `envelope.correlation_id` was
+  recently processed.
+- If it was, publish an `agent.session.updated` from the cached snapshot only (skip
+  the Hermes call).
+
+Until this is implemented, duplicate Hermes calls are possible during pending recovery
+cycles. In practice this only affects sessions where the companion app restarted or
+lost its bus connection mid-flight.
+
 ## Sibling Repos
 
 - `../agent-bus`: durable bus and event contract.
