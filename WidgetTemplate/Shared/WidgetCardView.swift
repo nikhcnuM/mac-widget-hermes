@@ -49,17 +49,6 @@ enum WidgetCardLayout: Equatable {
         }
     }
 
-    var cornerRadius: CGFloat {
-        switch self {
-        case .small:
-            return 24
-        case .medium:
-            return 26
-        case .preview:
-            return 30
-        }
-    }
-
     var timestampFont: Font {
         switch self {
         case .small:
@@ -78,36 +67,25 @@ struct WidgetCardView: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: layout.cornerRadius, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: content.accent.backgroundColors,
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-
-            RoundedRectangle(cornerRadius: layout.cornerRadius, style: .continuous)
-                .stroke(Color.white.opacity(0.12), lineWidth: 1)
+            Color(red: 0.06, green: 0.07, blue: 0.08)
 
             VStack(alignment: .leading, spacing: 12) {
                 HStack(alignment: .top, spacing: 12) {
-                    Text(content.title)
+                    Text("Hermes")
                         .font(layout.titleFont.weight(.semibold))
                         .foregroundStyle(.white)
-                        .lineLimit(layout == .small ? 2 : 1)
 
                     Spacer(minLength: 0)
 
-                    Text(content.accent.title)
+                    Text(content.status)
                         .font(.caption2.weight(.semibold))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(Color.white.opacity(0.16), in: Capsule())
+                        .background(Color.green.opacity(0.20), in: Capsule())
                         .foregroundStyle(.white.opacity(0.92))
                 }
 
-                Text(content.message)
+                Text(content.assistantText.isEmpty ? content.transcript : content.assistantText)
                     .font(layout.bodyFont)
                     .foregroundStyle(.white.opacity(0.92))
                     .lineSpacing(2)

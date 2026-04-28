@@ -34,8 +34,8 @@ struct MacWidgetBoilerplateWidget: Widget {
                     Color.clear
                 }
         }
-        .configurationDisplayName("Template widget")
-        .description("A minimal starting point for personal macOS widgets.")
+        .configurationDisplayName("Hermes")
+        .description("Shows the latest Hermes companion response.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
